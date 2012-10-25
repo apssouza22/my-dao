@@ -49,8 +49,8 @@ class Insert extends DB
 
 	public function save()
 	{
-		$stmte = $this->execute($this->getQuery());
-		return $stmte->rowCount();
+		$stmte = $this->execute($this->getQuery(),true);
+		return $this->id;
 	}
 
 }

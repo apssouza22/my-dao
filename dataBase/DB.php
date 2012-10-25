@@ -26,7 +26,7 @@ class DB
 		return $conn;
 	}
 
-	public function execute($query)
+	public function execute($query,$isInsert = false)
 	{
 		$conn = $this->connect();
 		try {
@@ -40,6 +40,11 @@ class DB
 			echo $e->getMessage();
 			return false;
 		}
+		
+		if($isInsert){
+			$this->id = $conn->lastInsertId();
+		}
+		
 		$conn = null;
 		return $stmte;
 	}

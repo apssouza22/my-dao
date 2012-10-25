@@ -24,9 +24,9 @@ $insert = Query::create()
 		),true)
 		->set('email', "teste@teste2")
 		->set('telefone', "276184253")
-		->getQuery();
-	//	->save();
-echo $insert;
+	//	->getQuery();
+		->save();
+echo $insert ."<br>";
 
 $update = Query::create()
 		->update('amostras_chupa')
@@ -42,7 +42,8 @@ $update = Query::create()
 		))
 		//->getQuery();
 		->save();
-echo $update;
+
+echo $update ."<br>";
 		
 
 $query = Query::create()
