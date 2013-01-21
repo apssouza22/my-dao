@@ -5,11 +5,9 @@
  *
  * @author Alexsandro Souza
  */
-class DB
-{
+class DB {
 
-	protected function connect()
-	{
+	protected function connect() {
 		$db_nome = DB_NOME;
 		$db_senha = DB_SENHA;
 		$db_usuario = DB_USUARIO;
@@ -26,37 +24,41 @@ class DB
 		return $conn;
 	}
 
-	public function execute($query,$isInsert = false)
-	{
+	public function execute($query, $isInsert = false) {
 		$conn = $this->connect();
 		try {
 			$stmte = $conn->prepare($query);
-			foreach ($this->valueColumns as $key => &$value) {
-				$stmte->bindParam($key, $value);
+			if(is_array($this->valueColumns)) {
+				foreach ($this->valueColumns as $key => &$value) {
+					$stmte->bindParam($key, $value);
+				}
 			}
-
 			$stmte->execute();
 		} catch (PDOException $e) {
 			echo $e->getMessage();
+			echo '<br>';
+			echo $query;
+			//header('location: tratarErro.php?pagina=' . getCurrentUrl() . '&msgErro=' . $e->getMessage());
+			exit;
+			//echo $query;
+			//exit;
 			return false;
 		}
-		
-		if($isInsert){
+
+		if ($isInsert) {
 			$this->id = $conn->lastInsertId();
 		}
-		
+
 		$conn = null;
 		return $stmte;
 	}
 
-	public function set($column, $value)
-	{
+	public function set($column, $value) {
 		$this->valueColumns[$column] = $value;
 		return $this;
 	}
 
-	protected function assignData($data)
-	{
+	protected function assignData($data) {
 		foreach ($data as $column => $value) {
 			$this->setRowData($column, $value);
 		}
@@ -69,8 +71,7 @@ class DB
 	 * @param array/Object $data 
 	 * @param boolean $htmlEntities 
 	 */
-	public function data($data, $htmlEntities = true)
-	{
+	public function data($data, $htmlEntities = true) {
 		try {
 			if (!is_array($data)) {
 				if (is_object($data)) {
@@ -102,8 +103,7 @@ class DB
 	 * @param unknown_type $column 
 	 * @param unknown_type $value
 	 */
-	public function setRowData($column, $value)
-	{
+	public function setRowData($column, $value) {
 
 		//as vezes vem y e x do form, nÃ£o sei por q, estou evitando eles
 		if ($column == 'y' || $column == 'x') {
@@ -113,17 +113,33 @@ class DB
 		// sï¿½ executa se for um dado escalar (string, inteiro, ...)
 		if (is_scalar($value)) {
 			if (is_string($value) && (!empty($value))) {
-				$this->valueColumns[$column] = "$value";
+				$this->valueColumns[$column] = utf8_decode( "$value");
 			} else if (is_bool($value)) {
-				$this->valueColumns[$column] = $value ? 'TRUE' : 'FALSE';
+				$this->valueColumns[$column] = utf8_decode($value ? 'TRUE' : 'FALSE');
 			} else if ($value !== '') {
-				$this->valueColumns[$column] = $value;
+				$this->valueColumns[$column] = utf8_decode($value);
 			} else {
 				$this->valueColumns[$column] = 'NULL';
 			}
 		}
 	}
+	
+	
+		
+	/**
+	 * Método que recebe a clausula Where da query, com a opção de passar os valores num array associativo
+	 * que será usado no método prepare do PDO
+	 */
+	public function where($sqlWhere, $bindParam= null)
+	{		
+		$this->filter->where($sqlWhere);
+		
+		if(is_array($bindParam)){
+			foreach ($bindParam as $key => $value) {
+				$this->valueColumns[$key] = $value;
+			}
+		}
+		return $this;
+	}
 
 }
-
-?>

@@ -9,13 +9,13 @@ class Delete extends DB
 {
 	private $from;
 	private $class;
-	private $where;
-	private $limit;
+	protected $filter;
 
 	public function __construct($table = null, $class = null)
 	{
 		$this->class = $class;
 		$this->from = $table;
+		$this->filter = new Filter();
 	}
 
 	public function from($from = null)
@@ -44,37 +44,19 @@ class Delete extends DB
 			echo $exc->getTraceAsString();
 		}
 	}
-
-	private function getWhere()
-	{
-		return $this->where ? " WHERE " . $this->where : " WHERE 1 ";
-	}
-
-	public function where($sqlWhere, $bindParam= null)
-	{		
-		$this->where = $sqlWhere;
-		if(is_array($bindParam)){
-			foreach ($bindParam as $key => $value) {
-				$this->valueColumns[$key] = $value;
-			}
-		}
-		return $this;
-	}
-
+	
 	public function limit($limit)
 	{
-		$this->limit = "LIMIT "  . $limit;
+		$this->filter->limit($limit);
 		return $this;
 	}
 
 	
-
 	public function getQuery()
 	{
 		$query = "DELETE ";
 		$query .= " " . $this->getFrom();
-		$query .= " " . $this->getWhere();
-		$query .= " " . $this->limit;
+		$query .= " " . $this->filter->getFilter();
 		return $query;
 	}
 	

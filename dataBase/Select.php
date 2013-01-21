@@ -1,30 +1,24 @@
 <?php
 
-
 /**
  * Description of Select
  *
  * @author Alexsandro Souza
  */
-
-class Select extends DB
-{
+class Select extends DB {
 
 	private $from;
+	private $join;
 	private $class;
-	private $where;
-	private $group;
-	private $order;
-	private $limit;
+	protected $filter;
 
-	public function __construct($sqlSelect = ' * ', $class = null)
-	{
+	public function __construct($sqlSelect = ' * ', $class = null) {
 		$this->class = $class;
 		$this->select = $sqlSelect;
+		$this->filter = new Filter();
 	}
 
-	public function from($from = null)
-	{
+	public function from($from = null) {
 		if (!$from) {
 			if ($this->class) {
 				$from = constant("{$this->class}::TB_NAME");
@@ -33,9 +27,23 @@ class Select extends DB
 		$this->from = $from;
 		return $this;
 	}
+	
+	public function leftJoin($sTable){
+		$this->join .= ' LEFT JOIN '. $sTable;
+		return $this;
+	}
+	
+	public function rightJoin($sTable){
+		$this->join .= ' RIGHT JOIN '. $sTable;
+		return $this;
+	}
+	
+	public function innerJoin($sTable){
+		$this->join .= ' INNER JOIN '. $sTable;
+		return $this;
+	}
 
-	private function getFrom()
-	{
+	private function getFrom() {
 		try {
 			if (!$this->from) {
 				if ($this->class) {
@@ -50,75 +58,57 @@ class Select extends DB
 		}
 	}
 
-	private function getWhere()
-	{
-		return $this->where ? " WHERE " . $this->where : " WHERE 1 ";
-	}
-
-	public function where($sqlWhere, $bindParam= null)
-	{		
-		$this->where = $sqlWhere;
-		if(is_array($bindParam)){
-			foreach ($bindParam as $key => $value) {
-				$this->valueColumns[$key] = $value;
-			}
-		}
+	public function setFilter(Filter $filter) {
+		$this->filter = $filter;
 		return $this;
 	}
 
-	public function groupBy($group)
-	{
-		$this->group = " GROUP BY " . $group;
+	public function groupBy($group) {
+		$this->filter->groupBy($group);
 		return $this;
 	}
 
-	public function orderBy($order)
-	{
-		$this->order = " ORDER BY " . $order;
+	public function orderBy($order) {
+		$this->filter->orderBy($order);
 		return $this;
 	}
 
-	public function limit($limit, $offSet = 0)
-	{
-		$this->limit = "LIMIT " . $offSet . ' , ' . $limit;
+	public function limit($limit, $offSet = 0) {
+		$this->filter->limit($limit, $offSet);
 		return $this;
 	}
 
-	public function fetchAll()
-	{
+	public function fetchAll() {
 		$stmt = $this->execute($this->getQuery());
 		return $stmt->fetchAll();
 	}
 
-	public function fetchObject()
-	{
+	public function fetchObject() {
 		$stmt = $this->execute($this->getQuery());
 		return $stmt->fetchObject($this->class);
 	}
 
-	public function fetchOne()
-	{
+	public function fetchOne() {
 		$stmt = $this->execute($this->getQuery());
 		return $stmt->fetch();
 	}
 
-	public function fetchObjectAll()
-	{
+	public function fetchAllObject() {
 		$stmt = $this->execute($this->getQuery());
-		$stmt->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, $this->class);
-		return $stmt->fetchAll();
+		if ($stmt) {
+			$stmt->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, $this->class);
+			return $stmt->fetchAll();
+		} else {
+			return false;
+		}
 	}
 
-	public function getQuery()
-	{
+	public function getQuery() {
 		$query = "SELECT {$this->select} ";
 		$query .= " " . $this->getFrom();
-		$query .= " " . $this->getWhere();
-		$query .= " " . $this->group;
-		$query .= " " . $this->order;
-		$query .= " " . $this->limit;
+		$query .= " " . $this->join;
+		$query .= " " . $this->filter->getFilter();		
 		return $query;
 	}
 
 }
-?>
