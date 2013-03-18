@@ -1,64 +1,56 @@
 <?php
 
+namespace dao;
+
 /**
  * Description of DB
  *
  * @author Alexsandro Souza
  */
-class DB {
+class DB
+{
 
-	protected function connect() {
-		$db_nome = DB_NOME;
-		$db_senha = DB_SENHA;
-		$db_usuario = DB_USUARIO;
-		$db_host = DB_HOST;
-		$db_porta = DB_PORTA;
+	public static $utf8Convert = false;
+	public static $debug = false;
+	protected $valueColumns;
+	protected $conn;
 
-		$db_porta = $db_porta ? $db_porta : '3306';
-
-		$conn = new PDO("mysql:host={$db_host}; dbname={$db_nome}; port={$db_porta}", $db_usuario, $db_senha);
-
-		// define o atributo error mode para lanÃ§ar exceÃ§Ãµes em caso de erro
-		$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-		return $conn;
-	}
-
-	public function execute($query, $isInsert = false) {
-		$conn = $this->connect();
+	public function execute($query, $isInsert = false)
+	{
 		try {
-			$stmte = $conn->prepare($query);
-			if(is_array($this->valueColumns)) {
+			$stmte = $this->conn->prepare($query);
+			if (is_array($this->valueColumns)) {
 				foreach ($this->valueColumns as $key => &$value) {
 					$stmte->bindParam($key, $value);
 				}
 			}
 			$stmte->execute();
-		} catch (PDOException $e) {
-			echo $e->getMessage();
-			echo '<br>';
-			echo $query;
-			//header('location: tratarErro.php?pagina=' . getCurrentUrl() . '&msgErro=' . $e->getMessage());
-			exit;
-			//echo $query;
-			//exit;
+		} catch (\PDOException $e) {
+			if (self::$debug) {
+				echo $e->getMessage();
+				echo '<br>';
+				echo $query;
+			}
+			throw new \Exception($e->getMessage());
 			return false;
 		}
 
 		if ($isInsert) {
-			$this->id = $conn->lastInsertId();
+			$this->id = $this->conn->lastInsertId();
 		}
 
-		$conn = null;
+		$this->conn = null;
 		return $stmte;
 	}
 
-	public function set($column, $value) {
+	public function set($column, $value)
+	{
 		$this->valueColumns[$column] = $value;
 		return $this;
 	}
 
-	protected function assignData($data) {
+	protected function assignData($data)
+	{
 		foreach ($data as $column => $value) {
 			$this->setRowData($column, $value);
 		}
@@ -71,7 +63,8 @@ class DB {
 	 * @param array/Object $data 
 	 * @param boolean $htmlEntities 
 	 */
-	public function data($data, $htmlEntities = true) {
+	public function data($data, $htmlEntities = true)
+	{
 		try {
 			if (!is_array($data)) {
 				if (is_object($data)) {
@@ -103,7 +96,8 @@ class DB {
 	 * @param unknown_type $column 
 	 * @param unknown_type $value
 	 */
-	public function setRowData($column, $value) {
+	public function setRowData($column, $value)
+	{
 
 		//as vezes vem y e x do form, nÃ£o sei por q, estou evitando eles
 		if ($column == 'y' || $column == 'x') {
@@ -113,28 +107,26 @@ class DB {
 		// sï¿½ executa se for um dado escalar (string, inteiro, ...)
 		if (is_scalar($value)) {
 			if (is_string($value) && (!empty($value))) {
-				$this->valueColumns[$column] = utf8_decode( "$value");
+				$this->valueColumns[$column] = self::$utf8Convert ? utf8_decode($value) : $value;
 			} else if (is_bool($value)) {
-				$this->valueColumns[$column] = utf8_decode($value ? 'TRUE' : 'FALSE');
+				$this->valueColumns[$column] = $value ? 'TRUE' : 'FALSE';
 			} else if ($value !== '') {
-				$this->valueColumns[$column] = utf8_decode($value);
+				$this->valueColumns[$column] = self::$utf8Convert ? utf8_decode($value) : $value;
 			} else {
 				$this->valueColumns[$column] = 'NULL';
 			}
 		}
 	}
-	
-	
-		
+
 	/**
-	 * Método que recebe a clausula Where da query, com a opção de passar os valores num array associativo
-	 * que será usado no método prepare do PDO
+	 * Mï¿½todo que recebe a clausula Where da query, com a opï¿½ï¿½o de passar os valores num array associativo
+	 * que serï¿½ usado no mï¿½todo prepare do PDO
 	 */
-	public function where($sqlWhere, $bindParam= null)
-	{		
+	public function where($sqlWhere, $bindParam = null)
+	{
 		$this->filter->where($sqlWhere);
-		
-		if(is_array($bindParam)){
+
+		if (is_array($bindParam)) {
 			foreach ($bindParam as $key => $value) {
 				$this->valueColumns[$key] = $value;
 			}

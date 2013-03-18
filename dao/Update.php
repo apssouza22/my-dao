@@ -1,16 +1,17 @@
 <?php
 
+namespace dao;
+
 /**
  * Description of Update
  *
  * @author Alexsandro Souza
  */
-
 class Update extends DB
 {
+
 	private $table;
 	protected $filter;
-	
 	protected $valueColumns = array();
 
 	public function __construct($table = ' ', $class = null)
@@ -20,34 +21,30 @@ class Update extends DB
 		$this->filter = new Filter();
 	}
 
-	
-	
 	/**
 	 * Gera a string sql 
 	 * @return string Sql formatado pronto para executar 
 	 */
 	public function getQuery()
-	{		
+	{
 //		foreach ($this->valueColumns as $column => $value) {
 //			$this->setRowData($column, $value);
 //		}
 
-		if($this->valueColumns)
-		{
-			foreach ($this->valueColumns as $column=>$value)
-			{
+		if ($this->valueColumns) {
+			foreach ($this->valueColumns as $column => $value) {
 				$set[] = "{$column} = :{$column}";
 			}
 		}
-		
+
 		$sql = "UPDATE {$this->getTable()} ";
 		$sql .= ' SET ' . implode(', ', $set);
 		$sql .= $this->filter->getWhere();
 		return $sql;
 	}
-	
+
 	/**
-	 *retorna o nome da tabela no banco de dados da entidade
+	 * retorna o nome da tabela no banco de dados da entidade
 	 * @return string nome da tabela 
 	 */
 	private function getTable()
@@ -65,9 +62,9 @@ class Update extends DB
 			echo $exc->getTraceAsString();
 		}
 	}
-	
+
 	/**
-	 * executa a instrução no banco de dados
+	 * executa a instruï¿½ï¿½o no banco de dados
 	 * @return int retorna a quantidade de registros afetados
 	 */
 	public function save()

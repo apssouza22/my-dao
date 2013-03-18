@@ -1,5 +1,7 @@
 <?php
 
+namespace dao;
+
 /**
  * Description of Delete
  *
@@ -7,6 +9,7 @@
  */
 class Delete extends DB
 {
+
 	private $from;
 	private $class;
 	protected $filter;
@@ -44,14 +47,13 @@ class Delete extends DB
 			echo $exc->getTraceAsString();
 		}
 	}
-	
+
 	public function limit($limit)
 	{
 		$this->filter->limit($limit);
 		return $this;
 	}
 
-	
 	public function getQuery()
 	{
 		$query = "DELETE ";
@@ -59,7 +61,7 @@ class Delete extends DB
 		$query .= " " . $this->filter->getFilter();
 		return $query;
 	}
-	
+
 	public function exec()
 	{
 		$stmte = $this->execute($this->getQuery());

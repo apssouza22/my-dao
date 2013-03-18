@@ -1,5 +1,7 @@
 <?php
 
+namespace dao;
+
 /**
  * Description of Insert
  *
@@ -7,6 +9,7 @@
  */
 class Insert extends DB
 {
+
 	private $table;
 	protected $valueColumns = array();
 
@@ -15,7 +18,7 @@ class Insert extends DB
 		$this->class = $class;
 		$this->table = $table;
 	}
-	
+
 	public function getQuery()
 	{
 		$sql = "INSERT INTO {$this->getTable()} (";
@@ -23,7 +26,7 @@ class Insert extends DB
 		$sql .= $columns . ')';
 
 		foreach ($this->valueColumns as $key => $value) {
-			$bindValue[]=":{$key}";
+			$bindValue[] = ":{$key}";
 		}
 
 		$values = implode(', ', $bindValue);
@@ -49,7 +52,7 @@ class Insert extends DB
 
 	public function save()
 	{
-		$stmte = $this->execute($this->getQuery(),true);
+		$stmte = $this->execute($this->getQuery(), true);
 		return $this->id;
 	}
 

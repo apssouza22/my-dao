@@ -1,5 +1,7 @@
 <?php
 
+namespace dao;
+
 /**
  * Description of DB_Query
  *
@@ -8,10 +10,9 @@
 class Query
 {
 
-	private $conn;
 	private $operation;
 
-	public function create($class = null)
+	public static function create($class = null)
 	{
 		$self = new self();
 		$self->class = $class;
@@ -29,13 +30,13 @@ class Query
 		$this->operation = new Insert($table, $this->class);
 		return $this->operation;
 	}
-	
+
 	public function update($table = '')
 	{
 		$this->operation = new Update($table, $this->class);
 		return $this->operation;
 	}
-	
+
 	public function delete($table = '')
 	{
 		$this->operation = new Delete($table, $this->class);
