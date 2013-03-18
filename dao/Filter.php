@@ -3,7 +3,7 @@
 namespace dao;
 
 /**
- * Classe que gurdar� todos os filtros
+ * Classe que gurdará todos os filtros
  *
  * @author apssouza
  */
@@ -38,12 +38,12 @@ class Filter
 
 	public function getWhere()
 	{
-		return $this->where ? " WHERE " . $this->where : " WHERE 1 ";
+		return $this->where ? " WHERE " . $this->where : " WHERE 1";
 	}
 
 	public function limit($limit, $offSet = 0)
 	{
-		$this->limit = "LIMIT " . $offSet . ' , ' . $limit;
+		$this->limit = " LIMIT " . $offSet . ' , ' . $limit;
 		return $this;
 	}
 
@@ -61,10 +61,10 @@ class Filter
 
 	public function getFilter()
 	{
-		$query = " " . $this->getWhere();
-		$query .= " " . $this->group;
-		$query .= " " . $this->order;
-		$query .= " " . $this->limit;
+		$query = $this->getWhere();
+		$query .=  $this->group;
+		$query .= $this->order;
+		$query .= $this->limit;
 		return $query;
 	}
 

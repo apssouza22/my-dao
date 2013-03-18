@@ -13,8 +13,9 @@ class Insert extends DB
 	private $table;
 	protected $valueColumns = array();
 
-	public function __construct($table = ' ', $class = null)
+	public function __construct($conn, $table = ' ', $class = null)
 	{
+		$this->conn = $conn;
 		$this->class = $class;
 		$this->table = $table;
 	}

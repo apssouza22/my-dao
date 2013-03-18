@@ -18,6 +18,7 @@ class DB
 	public function execute($query, $isInsert = false)
 	{
 		try {
+			echo $query;
 			$stmte = $this->conn->prepare($query);
 			if (is_array($this->valueColumns)) {
 				foreach ($this->valueColumns as $key => &$value) {
@@ -68,13 +69,12 @@ class DB
 		try {
 			if (!is_array($data)) {
 				if (is_object($data)) {
-					$this->assignData(get_object_vars($data));
+					$data = get_object_vars($data);
 				} else {
 					throw new Exception("Data deve ser um array associativo ou um objeto");
 				}
-			} else {
-				$this->assignData($data);
-			}
+			} 
+			$this->assignData($data);
 		} catch (Exception $exc) {
 			echo $exc->getTraceAsString();
 		}

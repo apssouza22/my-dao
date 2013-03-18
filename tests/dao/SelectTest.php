@@ -15,17 +15,15 @@ class SelectTest extends \PHPUnit_Framework_TestCase
 	 * @var Select
 	 */
 	protected $object;
+	private $db;
 
-	/**
-	 * Sets up the fixture, for example, opens a network connection.
-	 * This method is called before a test is executed.
-	 */
-	protected function setUp()
+
+	public function __construct()
 	{
-		$db = new \PDO("mysql:host=localhost;dbname=testedao", "root", "");
-		$db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-		$db->query('DROP TABLE IF EXISTS usuario;');
-		$db->query("CREATE TABLE `usuario` (
+		$this->db = new \PDO("mysql:host=localhost;dbname=testedao", "root", "");
+		$this->db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+		$this->db->query('DROP TABLE IF EXISTS usuario;');
+		$this->db->query("CREATE TABLE `usuario` (
 			  `id` int(11) NOT NULL AUTO_INCREMENT,
 			  `nome` varchar(45) DEFAULT NULL,
 			  `email` varchar(45) DEFAULT NULL,
@@ -33,36 +31,43 @@ class SelectTest extends \PHPUnit_Framework_TestCase
 			  PRIMARY KEY (`id`)
 			) ENGINE=InnoDB DEFAULT CHARSET=latin1");
 		
-		$db->query('DROP TABLE IF EXISTS item;');
-		$db->query("CREATE TABLE `item` (
+		$this->db->query('DROP TABLE IF EXISTS item;');
+		$this->db->query("CREATE TABLE `item` (
 					  `id` int(11) NOT NULL AUTO_INCREMENT,
 					  `idproduto` int(11) DEFAULT NULL,
 					  `idusuario` int(11) DEFAULT NULL,
 					  PRIMARY KEY (`id`)
 					) ENGINE=InnoDB DEFAULT CHARSET=latin1");
 		
-		$db->query('DROP TABLE IF EXISTS produto;');
-		$db->query("CREATE TABLE `produto` (
+		$this->db->query('DROP TABLE IF EXISTS produto;');
+		$this->db->query("CREATE TABLE `produto` (
 					  `id` int(11) NOT NULL AUTO_INCREMENT,
 					  `nome` varchar(45) DEFAULT NULL,
 					  `preco` decimal(10,2) DEFAULT NULL,
 					  PRIMARY KEY (`id`)
 					) ENGINE=InnoDB DEFAULT CHARSET=latin1");
 		
-		$db->query("INSERT INTO `testedao`.`usuario`(`nome`,`email`)
+		$this->db->query("INSERT INTO `testedao`.`usuario`(`nome`,`email`)
 					VALUES('Alexsandro Souza','apssouza22@gmail.com');");
-		$db->query("INSERT INTO `testedao`.`usuario`(`nome`,`email`)
+		$this->db->query("INSERT INTO `testedao`.`usuario`(`nome`,`email`)
 					VALUES('Marcia Souza','marcia@gmail.com');");
 		
-		$db->query("INSERT INTO `testedao`.`produto`(`nome`,`preco`)
+		$this->db->query("INSERT INTO `testedao`.`produto`(`nome`,`preco`)
 					VALUES('carro',20000.00);");
 		
-		$db->query("INSERT INTO `testedao`.`item`(`idproduto`,`idusuario`)
+		$this->db->query("INSERT INTO `testedao`.`item`(`idproduto`,`idusuario`)
 					VALUES(1,1);");
-		$db->query("INSERT INTO `testedao`.`item`(`idproduto`,`idusuario`)
+		$this->db->query("INSERT INTO `testedao`.`item`(`idproduto`,`idusuario`)
 					VALUES(1,3);");
-		
-		$this->object = new \dao\Select($db, '*', 'stdClass');
+	}
+
+	/**
+	 * Sets up the fixture, for example, opens a network connection.
+	 * This method is called before a test is executed.
+	 */
+	protected function setUp()
+	{
+		$this->object = new \dao\Select($this->db, '*', 'stdClass');
 	}
 
 	public function testFrom()
@@ -184,7 +189,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase
 				->groupBy('id')
 				->limit(1)
 				->getQuery();
-		$this->assertEquals('SELECT *   FROM usuario    WHERE 1   GROUP BY id  ORDER BY id LIMIT 0 , 1', $query);
+		$this->assertEquals('SELECT *   FROM usuario   WHERE 1 GROUP BY id ORDER BY id LIMIT 0 , 1', $query);
 	}
 
 }
