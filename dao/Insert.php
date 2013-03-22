@@ -15,7 +15,7 @@ class Insert extends DB
 
 	public function __construct($conn, $table = ' ', $class = null)
 	{
-		$this->conn = $conn;
+		$this->setConnection($conn);
 		$this->class = $class;
 		$this->table = $table;
 	}

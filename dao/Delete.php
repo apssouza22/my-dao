@@ -14,8 +14,9 @@ class Delete extends DB
 	private $class;
 	protected $filter;
 
-	public function __construct($table = null, $class = null)
+	public function __construct($conn, $table = null, $class = null)
 	{
+		$this->setConnection($conn);
 		$this->class = $class;
 		$this->from = $table;
 		$this->filter = new Filter();
@@ -53,12 +54,12 @@ class Delete extends DB
 		$this->filter->limit($limit);
 		return $this;
 	}
-
+	
 	public function getQuery()
 	{
-		$query = "DELETE ";
-		$query .= " " . $this->getFrom();
-		$query .= " " . $this->filter->getFilter();
+		$query = "DELETE";
+		$query .= $this->getFrom();
+		$query .= $this->filter->getFilter();
 		return $query;
 	}
 

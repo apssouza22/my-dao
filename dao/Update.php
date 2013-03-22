@@ -14,8 +14,9 @@ class Update extends DB
 	protected $filter;
 	protected $valueColumns = array();
 
-	public function __construct($table = ' ', $class = null)
+	public function __construct($conn, $table = ' ', $class = null)
 	{
+		$this->setConnection($conn);
 		$this->class = $class;
 		$this->table = $table;
 		$this->filter = new Filter();
@@ -37,7 +38,7 @@ class Update extends DB
 			}
 		}
 
-		$sql = "UPDATE {$this->getTable()} ";
+		$sql = "UPDATE {$this->getTable()}";
 		$sql .= ' SET ' . implode(', ', $set);
 		$sql .= $this->filter->getWhere();
 		return $sql;

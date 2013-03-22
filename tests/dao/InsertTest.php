@@ -17,34 +17,17 @@ class InsertTest extends \PHPUnit_Framework_TestCase
 	protected $object;
 	private $db;
 
-	public function __construct()
+	public static function setUpBeforeClass()
 	{
-		$this->db = new \PDO("mysql:host=localhost;dbname=testedao", "root", "");
-		$this->db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-		$this->db->query('DROP TABLE IF EXISTS usuario;');
-		$this->db->query("CREATE TABLE `usuario` (
+		$db = new \PDO("mysql:host=localhost;dbname=testedao", "root", "");
+		$db->query('DROP TABLE IF EXISTS usuario;');
+		$db->query("CREATE TABLE `usuario` (
 			  `id` int(11) NOT NULL AUTO_INCREMENT,
 			  `nome` varchar(45) DEFAULT NULL,
 			  `email` varchar(45) DEFAULT NULL,
 			  `datacadastro` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
 			  PRIMARY KEY (`id`)
 			) ENGINE=InnoDB DEFAULT CHARSET=latin1");
-
-		$this->db->query('DROP TABLE IF EXISTS item;');
-		$this->db->query("CREATE TABLE `item` (
-					  `id` int(11) NOT NULL AUTO_INCREMENT,
-					  `idproduto` int(11) DEFAULT NULL,
-					  `idusuario` int(11) DEFAULT NULL,
-					  PRIMARY KEY (`id`)
-					) ENGINE=InnoDB DEFAULT CHARSET=latin1");
-
-		$this->db->query('DROP TABLE IF EXISTS produto;');
-		$this->db->query("CREATE TABLE `produto` (
-					  `id` int(11) NOT NULL AUTO_INCREMENT,
-					  `nome` varchar(45) DEFAULT NULL,
-					  `preco` decimal(10,2) DEFAULT NULL,
-					  PRIMARY KEY (`id`)
-					) ENGINE=InnoDB DEFAULT CHARSET=latin1");
 	}
 
 	/**
@@ -53,12 +36,12 @@ class InsertTest extends \PHPUnit_Framework_TestCase
 	 */
 	protected function setUp()
 	{
+		$this->db = new \PDO("mysql:host=localhost;dbname=testedao", "root", "");
 		$this->object = new Insert($this->db, 'usuario', 'stdClass');
 	}
 
 	public function testGetQuery()
 	{
-		
 		$this->object->data(array(
 			'nome' => 'Alexsandro Pereira',
 			'email' => "alex@gmail.com"
@@ -83,7 +66,6 @@ class InsertTest extends \PHPUnit_Framework_TestCase
 		
 		$this->assertEquals(1, $this->object->save());
 		
-		$this->object = new Insert($this->db, 'usuario', 'stdClass');//abrindo novamente a conexão
 		$this->object->data(array(
 			'nome' => 'Alexsandro Pereira',
 			'email' => "alex@gmail.com"

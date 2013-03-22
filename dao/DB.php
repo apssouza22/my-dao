@@ -7,18 +7,22 @@ namespace dao;
  *
  * @author Alexsandro Souza
  */
-class DB
+abstract class DB
 {
 
 	public static $utf8Convert = false;
 	public static $debug = false;
 	protected $valueColumns;
 	protected $conn;
+	
+	protected function setConnection($conn){
+		$conn->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+		$this->conn = $conn;
+	}
 
 	public function execute($query, $isInsert = false)
 	{
 		try {
-			echo $query;
 			$stmte = $this->conn->prepare($query);
 			if (is_array($this->valueColumns)) {
 				foreach ($this->valueColumns as $key => &$value) {
@@ -40,7 +44,6 @@ class DB
 			$this->id = $this->conn->lastInsertId();
 		}
 
-		$this->conn = null;
 		return $stmte;
 	}
 

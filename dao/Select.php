@@ -17,7 +17,7 @@ class Select extends DB
 
 	public function __construct($conn, $sqlSelect = ' * ', $class = null)
 	{
-		$this->conn = $conn;
+		$this->setConnection($conn);
 		$this->class = $class;
 		$this->select = $sqlSelect;
 		$this->filter = new Filter();
@@ -31,6 +31,22 @@ class Select extends DB
 			}
 		}
 		$this->from = $from;
+		return $this;
+	}
+
+	/**
+	 * Define a clausura on 
+	 * @param array $aOn array ou string contendo a verificação 
+	 */
+	public function on($on)
+	{
+		if(is_array($on)){
+			$this->join .= ' ON (';
+				$this->join .= key($on) .' = ' .current($on);
+			$this->join .= ') ';
+		}else{
+			$this->join .= ' ON ('.$on.') ';
+		}
 		return $this;
 	}
 
@@ -101,7 +117,7 @@ class Select extends DB
 	public function fetchObject()
 	{
 		$stmt = $this->execute($this->getQuery());
-		return $stmt->fetchObject($this->class);
+		return $stmt->fetchObject($this->class ? : 'stdClass' );
 	}
 
 	public function fetchOne()
@@ -109,14 +125,14 @@ class Select extends DB
 		$this->limit(1);
 		$stmt = $this->execute($this->getQuery());
 		$fetch = $stmt->fetchAll();
-		return count($fetch) ? $fetch[0] : false  ;
+		return count($fetch) ? $fetch[0] : false;
 		//TODO: return $stmt->fetch(); //não funfou, verificar
 	}
 
 	public function fetchAllObject()
 	{
 		$stmt = $this->execute($this->getQuery());
-		$this->class = $this->class ?: 'stdClass';
+		$this->class = $this->class ? : 'stdClass';
 		if ($stmt) {
 			$stmt->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, $this->class);
 			return $stmt->fetchAll();
