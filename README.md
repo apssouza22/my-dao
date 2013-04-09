@@ -2,7 +2,11 @@
 =======================================
 
 Estrutura simples de classes para abstração de banco de dados
-
+* Quase zero configuração;
+* Bem testada e com testes unitários;
+* Adaptável para diferentes banco de dados; 
+* Foi criado seguindo referências de outros ORMs (Zend DB e Doctrine);
+* Estrutura simples com apenas 7 classes.
 
 Criando  query object
 ----------------------------
@@ -63,6 +67,20 @@ Filtrando registros:
 		var_dump($result);
 
 ```
+	
+### Prepare Statement
+
+Usando prepare statement do PDO para tratar parametros:
+$result = dao\Query::create($db)
+					->Select('id, nome')
+					->from('usuario')
+					->where('id = :id AND nome= :nome', array(
+						'id'=> 2,
+						'nome'=> 'João'
+					))
+					->fetchAllObject();
+		var_dump($result);
+
 	
 ### Joins:
 ```php
