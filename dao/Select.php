@@ -22,6 +22,15 @@ class Select extends DB
 		$this->select = $sqlSelect;
 		$this->filter = new Filter();
 	}
+	
+	/**
+	 * Limpa todas os filtros e propriedades do objeto Filter
+	 */
+	public function reset(){
+		$this->filter = new Filter;
+		$this->join  = '';
+		return $this;
+	}
 
 	public function from($from = null)
 	{
@@ -124,9 +133,7 @@ class Select extends DB
 	{
 		$this->limit(1);
 		$stmt = $this->execute($this->getQuery());
-		$fetch = $stmt->fetchAll();
-		return count($fetch) ? $fetch[0] : false;
-		//TODO: return $stmt->fetch(); //não funfou, verificar
+		return $stmt->fetch(\PDO::FETCH_ASSOC);
 	}
 
 	public function fetchAllObject()

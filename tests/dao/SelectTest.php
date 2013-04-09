@@ -70,6 +70,17 @@ class SelectTest extends \PHPUnit_Framework_TestCase
 		$this->db = new \PDO("mysql:host=localhost;dbname=testedao", "root", "");
 		$this->object = new \dao\Select($this->db, '*', 'stdClass');
 	}
+	
+	public function testReset(){
+		$query = $this->object->from('usuario')
+				->orderBy('id')
+				->groupBy('id')
+				->limit(1)
+				->innerJoin('item i ON i.idusuario = u.id')
+				->reset()
+				->getQuery();
+		$this->assertEquals('SELECT *   FROM usuario   WHERE 1', $query);
+	}
 
 	public function testFrom()
 	{
@@ -155,8 +166,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase
 	public function testFetchOne()
 	{
 		$this->object->from('usuario');
-//		var_dump($this->object->fetchOne());
-//		$this->assertEquals(1,  count($this->object->fetchOne()));
+		$this->assertTrue(is_array($this->object->fetchOne()));
 	}
 	
 	public function testFetchAllObject()
