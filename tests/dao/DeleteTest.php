@@ -79,7 +79,7 @@ class DeleteTest extends \PHPUnit_Framework_TestCase
 	public function testExec()
 	{
 		$this->object->from('usuario');
-//		$this->assertEquals(2, $this->object->exec());
+		$this->assertEquals(2, $this->object->exec());
 	}
 
 }
