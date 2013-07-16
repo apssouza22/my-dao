@@ -21,6 +21,12 @@ class Query
 		$self->conn = $conn;
 		return $self;
 	}
+	
+	public function setClass($classname)
+	{
+		$this->class = $classname;
+		return $this;
+	}
 
 	public function select($sqlSelect = '*')
 	{
