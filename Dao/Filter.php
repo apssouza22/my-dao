@@ -1,6 +1,6 @@
 <?php
 
-namespace dao;
+namespace Dao;
 
 /**
  * Classe que gurdará todos os filtros
