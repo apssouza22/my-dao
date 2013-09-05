@@ -65,9 +65,9 @@ abstract class DB
 	 * com a opção de aplicar htmlspecialchars em cada valor antes de armazenar no banco
 	 * Usado apenas em INSERT e UPDATE
 	 * @param array/Object $data 
-	 * @param boolean $htmlEntities 
+	 * @param boolean $htmlspecialchars transformar os campos os caracteres especiais em codigos html 
 	 */
-	public function data($data, $htmlEntities = true)
+	public function data($data, $htmlspecialchars = true)
 	{
 		try {
 			if (!is_array($data)) {
@@ -82,7 +82,7 @@ abstract class DB
 			echo $exc->getTraceAsString();
 		}
 
-		if ($htmlEntities) {
+		if ($htmlspecialchars) {
 			foreach ($this->valueColumns as $chave => $value) {
 				if (in_array($value, $data)) {
 					$this->valueColumns[$chave] = htmlspecialchars($value, ENT_QUOTES);
@@ -113,10 +113,6 @@ abstract class DB
 				$this->valueColumns[$column] = self::$utf8Convert ? utf8_decode($value) : $value;
 			} else if (is_bool($value)) {
 				$this->valueColumns[$column] = $value ? 'TRUE' : 'FALSE';
-			} else if ($value !== '') {
-				$this->valueColumns[$column] = self::$utf8Convert ? utf8_decode($value) : $value;
-			} else {
-				$this->valueColumns[$column] = 'NULL';
 			}
 		}
 	}
