@@ -101,17 +101,16 @@ abstract class DB
 	 */
 	public function setRowData($column, $value)
 	{
-
 		//as vezes vem y e x do form, não sei por q, estou evitando eles
 		if ($column == 'y' || $column == 'x') {
 			return false;
 		}
 
-		// s� executa se for um dado escalar (string, inteiro, ...)
+		// só executa se for um dado escalar (string, inteiro, ...)
 		if (is_scalar($value)) {
-			if (is_string($value) && (!empty($value))) {
+			if (is_string($value) && !empty($value)) {
 				$this->valueColumns[$column] = self::$utf8Convert ? utf8_decode($value) : $value;
-			} else if (is_bool($value)) {
+			} else {
 				$this->valueColumns[$column] = $value ? 'TRUE' : 'FALSE';
 			}
 		}
