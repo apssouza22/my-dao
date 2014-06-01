@@ -1,6 +1,6 @@
 <?php
 
-namespace Dao;
+namespace Asouza\Dao;
 require_once dirname(__FILE__) . '/../../../Dao/DB.php';
 require_once dirname(__FILE__) . '/../../../Dao/Filter.php';
 require_once dirname(__FILE__) . '/../../../Dao/Update.php';
@@ -19,7 +19,7 @@ class UpdateTest extends \PHPUnit_Framework_TestCase
 	
 	public static function setUpBeforeClass()
 	{
-		$db = new \PDO("mysql:host=localhost;dbname=testedao", "root", "");
+		$db = require dirname(__FILE__) .'/../config.php';
 		$db->query('DROP TABLE IF EXISTS usuario;');
 		$db->query("CREATE TABLE `usuario` (
 			  `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -37,7 +37,7 @@ class UpdateTest extends \PHPUnit_Framework_TestCase
 	
 	protected function setUp()
 	{
-		$this->db = new \PDO("mysql:host=localhost;dbname=testedao", "root", "");
+		$this->db =  require dirname(__FILE__) .'/../config.php';
 		$this->object = new Update($this->db, 'usuario');
 	}
 

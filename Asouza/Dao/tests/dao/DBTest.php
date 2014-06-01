@@ -1,6 +1,6 @@
 <?php
 
-namespace Dao;
+namespace Asouza\Dao;
 require_once dirname(__FILE__) . '/../../../Dao/DB.php';
 require_once dirname(__FILE__) . '/../../../Dao/Filter.php';
 

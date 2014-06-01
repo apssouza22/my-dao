@@ -1,4 +1,6 @@
 <?php
+$db = new \PDO("mysql:host=localhost;dbname=testedao", "root", "5834");
+exit;
 require_once 'dao/DB.php';
 require_once 'dao/Filter.php';
 require_once 'dao/Query.php';

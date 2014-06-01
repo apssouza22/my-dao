@@ -1,6 +1,6 @@
 <?php
 
-namespace Dao;
+namespace Asouza\Dao;
 require_once dirname(__FILE__) . '/../../../Dao/DB.php';
 require_once dirname(__FILE__) . '/../../../Dao/Filter.php';
 require_once dirname(__FILE__) . '/../../../Dao/Select.php';
@@ -20,7 +20,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase
 
 	public static function setUpBeforeClass()
 	{
-		$db = new \PDO("mysql:host=localhost;dbname=testedao", "root", "");
+		$db = require dirname(__FILE__) .'/../config.php';
 		$db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 		$db->query('DROP TABLE IF EXISTS usuario;');
 		$db->query("CREATE TABLE `usuario` (
@@ -67,8 +67,8 @@ class SelectTest extends \PHPUnit_Framework_TestCase
 	 */
 	protected function setUp()
 	{
-		$this->db = new \PDO("mysql:host=localhost;dbname=testedao", "root", "");
-		$this->object = new \Dao\Select($this->db, '*', 'stdClass');
+		$this->db =  require dirname(__FILE__) .'/../config.php';
+		$this->object = new \Asouza\Dao\Select($this->db, '*', 'stdClass');
 	}
 	
 	public function testReset(){
@@ -84,7 +84,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase
 
 	public function testFrom()
 	{
-		$this->assertInstanceOf('\Dao\Select', $this->object->from('usuario'));
+		$this->assertInstanceOf('\Asouza\Dao\Select', $this->object->from('usuario'));
 	}
 
 	/**
@@ -123,13 +123,13 @@ class SelectTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testSetFilter()
 	{
-		$this->assertInstanceOf('\Dao\Select', $this->object->setFilter(new Filter));
+		$this->assertInstanceOf('\Asouza\Dao\Select', $this->object->setFilter(new Filter));
 	}
 
 	
 	public function testGroupBy()
 	{
-		$this->assertInstanceOf('\Dao\Select', $this->object->groupBy('id'));
+		$this->assertInstanceOf('\Asouza\Dao\Select', $this->object->groupBy('id'));
 	}
 
 	/**
@@ -138,7 +138,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testOrderBy()
 	{
-		$this->assertInstanceOf('\Dao\Select', $this->object->orderBy('id'));
+		$this->assertInstanceOf('\Asouza\Dao\Select', $this->object->orderBy('id'));
 	}
 
 	
