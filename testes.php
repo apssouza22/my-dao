@@ -1,37 +1,47 @@
 <?php
-$db = new \PDO("mysql:host=localhost;dbname=testedao", "root", "5834");
-exit;
-require_once 'dao/DB.php';
-require_once 'dao/Filter.php';
-require_once 'dao/Query.php';
-require_once 'dao/Select.php';
-require_once 'dao/Insert.php';
-require_once 'dao/Update.php';
-require_once 'dao/Delete.php';
+
+require_once 'Asouza/Dao/DB.php';
+require_once 'Asouza/Dao/Filter.php';
+require_once 'Asouza/Dao/Query.php';
+require_once 'Asouza/Dao/Select.php';
+require_once 'Asouza/Dao/Insert.php';
+require_once 'Asouza/Dao/Update.php';
+require_once 'Asouza/Dao/Delete.php';
 require_once 'ContainerDi.php';
 
 
 use helpers as h;
 
 //ajuda no debug, retirar em produção!!!!!!!
-dao\DB::$debug = true;
+Asouza\Dao\DB::$debug = true;
+
+        
 
 $db = new \PDO("mysql:host=localhost;dbname=testedao", "root", "");
-$select = new dao\Select($db, '*', 'stdClass');
+$select = new Asouza\Dao\Select($db, '*', 'stdClass');
+
+$std = new \stdClass();
+        $std->nome = 'Marcia';
+        $std->email = 'marcia@gmail';
+        $insert = new \Asouza\Dao\Insert($db, 'usuario');
+        echo "Ultimo id: " . 
+                $insert->data($std)
+                        ->save();
+        
 
 echo "<h2>Todos os registros de forma associativa</h2>";
 $allAssoc = $select->from('usuario')->fetchAll();
 var_dump($allAssoc);
 
 echo "<h2>Query com objeto fluído</h2>";
-$allObj = dao\Query::create($db)
+$allObj = Asouza\Dao\Query::create($db)
 		->Select('id, nome')
 		->from('usuario')
 		->fetchAllObject();
 var_dump($allObj);
 
 echo "<h2>Usando conteiner</h2>";
-$allObj = h\ContainerDi::getObject('dao\Select', array('id'))
+$allObj = h\ContainerDi::getObject('Asouza\Dao\Select', array('id'))
 		->from('usuario')
 		->fetchAllObject();
 var_dump($allObj);
@@ -41,7 +51,7 @@ $allObj = $select->from('usuario')->fetchAllObject();
 var_dump($allObj);
 
 echo "<h2>Filtrando resultados</h2>";
-$filter = new \dao\Filter;
+$filter = new \Asouza\Dao\Filter;
 $filter->where('id > 1')
 		->limit(2)
 		->orderBy('id DESC');
@@ -68,27 +78,27 @@ echo "<h2>Inserindo objeto</h2>";
 $std = new \stdClass();
 $std->nome = 'Marcia';
 $std->email = 'marcia@gmail';
-$insert = new \dao\Insert($db, 'usuario');
+$insert = new \Asouza\Dao\Insert($db, 'usuario');
 echo "Ultimo id: " . 
 		$insert->data($std)
 				->save();
 
 echo "<h2>Inserindo array</h2>";
 echo "Ultimo id: " . 
-h\ContainerDi::getObject('dao\Insert',array('usuario')) 
+h\ContainerDi::getObject('Asouza\Dao\Insert',array('usuario')) 
 		->data(array('nome' => 'Alex sandro',
 							'email' => 'alex@agenciasalve.com.br'))
 		->save();
 
 echo "<h2>Editando</h2>";
-$update = new \dao\Update($db, 'usuario');
+$update = new \Asouza\Dao\Update($db, 'usuario');
 echo $update->data(array('nome' => 'Alex',
 						'email' => 'cicero@agenciasalve.com.br'))
 		->where("id = 3")
 		->save(). " registros alterados ";
 
 echo "<h2>Deletando</h2>";
-$delete = new \dao\Delete($db, 'usuario');
+$delete = new \Asouza\Dao\Delete($db, 'usuario');
 echo $delete->where('id > 3')->exec(). ' registros deletados.';
 
 
