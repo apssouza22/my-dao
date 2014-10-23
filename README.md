@@ -13,19 +13,19 @@ Criando  query object
 
 ```php
 <?php	$db = new \PDO("mysql:host=localhost;dbname=testedao", "root", "");
-		$select = new dao\Select($db, 'columns', 'stdClass');
-		$insert = new \dao\Insert($db, 'table');
-		$update = new \dao\Update($db, 'table');
-		$delete = new \dao\Delete($db, 'table');
+		$select = new Asouza\Dao\Select($db, 'columns', 'stdClass');
+		$insert = new \Asouza\Dao\Insert($db, 'table');
+		$update = new \Asouza\Dao\Update($db, 'table');
+		$delete = new \Asouza\Dao\Delete($db, 'table');
 ```
 	Ou 
 	
 ```php
 <?php	$db = new \PDO("mysql:host=localhost;dbname=testedao", "root", "");
-		$select = dao\Query::create($db)->select('id, nome');
-		$insert = dao\Query::create($db)->insert('table');
-		$update = dao\Query::create($db)->update('table');
-		$delete = dao\Query::create($db)->delete('table');
+		$select = Asouza\Dao\Query::create($db)->select('id, nome');
+		$insert = Asouza\Dao\Query::create($db)->insert('table');
+		$update = Asouza\Dao\Query::create($db)->update('table');
+		$delete = Asouza\Dao\Query::create($db)->delete('table');
 ```
 
 ### Tabela de exemplo
@@ -46,7 +46,7 @@ Para os exemplos abaixo, considere a seguinte tabela:
 Listando todos os registros do banco:
 ```php
 <?php	
-		$result = dao\Query::create($db)
+		$result = Asouza\Dao\Query::create($db)
 					->Select('id, nome')
 					->from('usuario')
 					->fetchAllObject();
@@ -57,9 +57,9 @@ Listando todos os registros do banco:
 Filtrando registros:
 ```php
 <?php	
-		$filter = new dao\Filter();
+		$filter = new Asouza\Dao\Filter();
 		$filter->where('id > 2')->orderBy('id DESC');
-		$result = dao\Query::create($db)
+		$result = Asouza\Dao\Query::create($db)
 					->Select('id, nome')
 					->from('usuario')
 					->setFilter($filter)
@@ -71,7 +71,8 @@ Filtrando registros:
 ### Prepare Statement
 
 Usando prepare statement do PDO para tratar parametros:
-$result = dao\Query::create($db)
+```php
+$result = Asouza\Dao\Query::create($db)
 					->Select('id, nome')
 					->from('usuario')
 					->where('id = :id AND nome= :nome', array(
@@ -80,12 +81,12 @@ $result = dao\Query::create($db)
 					))
 					->fetchAllObject();
 		var_dump($result);
-
+```
 	
 ### Joins:
 ```php
 <?php	
-		$select = new dao\Select($db, '*');
+		$select = new Asouza\Dao\Select($db, '*');
 		$innerLeft = $select->from('usuario u')
 				->leftJoin('item i ')->on(array('i.idusuario' => 'u.id'))
 				->fetchAllObject();
@@ -108,7 +109,7 @@ Inserindo objeto:
 		$std = new \stdClass();
 		$std->nome = 'Marcia';
 		$std->email = 'marcia@gmail';
-		$insert = new \dao\Insert($db, 'usuario');
+		$insert = new \Asouza\Dao\Insert($db, 'usuario');
 		echo "Ultimo id: " . 
 				$insert->data($std)
 						->save();
@@ -118,7 +119,7 @@ Inserindo objeto:
 Inserindo array:
 ```php
 <?php	
-	$insert = new \dao\Insert($db, 'usuario');
+	$insert = new \Asouza\Dao\Insert($db, 'usuario');
 	echo "Ultimo id inserido: " . 
 			$insert->data(array(
 					'nome' => 'Alex sandro',
@@ -130,7 +131,7 @@ Inserindo array:
 ### Atualizando registros
 ```php
 <?php	
-	$update = new \dao\Update($db, 'usuario');
+	$update = new \Asouza\Dao\Update($db, 'usuario');
 	echo $update->data(array('nome' => 'Marcia',
 							'email' => 'marcia@gmail.com'))
 			->where("id = 3")
@@ -141,14 +142,14 @@ Inserindo array:
 ### Deletando registros
 ```php
 <?php	
-	$delete = new \dao\Delete($db, 'usuario');
+	$delete = new \Asouza\Dao\Delete($db, 'usuario');
 	echo $delete->where('id > 3')->exec(). ' registros deletados.';
 ```
 
 ### Debug
 Facilitando o debug no ambiente de desenvolvimento
 ```php
-dao\DB::$debug = true;
+Asouza\Dao\DB::$debug = true;
 ```
 
 ### Convenções
