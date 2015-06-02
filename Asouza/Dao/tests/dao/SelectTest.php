@@ -152,7 +152,9 @@ class SelectTest extends \PHPUnit_Framework_TestCase
 	public function testFetchAll()
 	{
 		$this->object->from('usuario');
-		$this->assertEquals(2,  count($this->object->fetchAll()));
+                $result = $this->object->fetchAll();
+		$this->assertEquals(2,  count($result));
+		$this->assertEquals(4,  count($result[0]));
 	}
 
 	

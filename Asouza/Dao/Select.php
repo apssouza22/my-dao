@@ -120,7 +120,7 @@ class Select extends DB
 	public function fetchAll()
 	{
 		$stmt = $this->execute($this->getQuery());
-		return $stmt->fetchAll();
+		return $stmt->fetchAll(\PDO::FETCH_ASSOC);
 	}
 
 	public function fetchObject()
