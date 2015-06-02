@@ -175,6 +175,8 @@ class SelectTest extends \PHPUnit_Framework_TestCase
 	{
 		$this->object->from('usuario');
 		$obj = $this->object->fetchAllObject();
+                $this->assertInstanceOf('ArrayObject', $obj);
+                $this->assertEquals(2, $obj->count());
 		$this->assertInstanceOf('stdClass', $obj[0]);
 	}
 

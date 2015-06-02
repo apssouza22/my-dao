@@ -120,7 +120,7 @@ class Select extends DB
 	public function fetchAll()
 	{
 		$stmt = $this->execute($this->getQuery());
-		return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+		return new \ArrayObject($stmt->fetchAll(\PDO::FETCH_ASSOC));
 	}
 
 	public function fetchObject()
@@ -142,7 +142,7 @@ class Select extends DB
 		$this->class = $this->class ? : 'stdClass';
 		if ($stmt) {
 			$stmt->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, $this->class);
-			return $stmt->fetchAll();
+			return new \ArrayObject($stmt->fetchAll());
 		} else {
 			return false;
 		}
